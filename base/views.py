@@ -13,14 +13,26 @@ from base.serializers.serializers import UserSerializer, UserSerializer
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
+
+    # this add the selected fields to the refresh and access token
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        data['username'] = self.user.username
+        data['email'] = self.user.email
+
+        return data
+
+
+# this will require user to decode the token in other to get the added information
+"""     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
 
         # Add custom claims
         token['username'] = user.username
 
-        return token
+        return token """
 
 
 class MyTokenObjectPairView(TokenObtainPairView):
